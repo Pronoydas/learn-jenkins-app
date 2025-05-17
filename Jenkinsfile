@@ -15,12 +15,8 @@ pipeline {
                npm --version
                ls -la
                npm ci 
-               nmp run build 
+               npm run build 
                ls -la
-<<<<<<< HEAD
-=======
-
->>>>>>> 410b1b70c036ce61b3362cc5c6367f13725f60cd
                '''
             }
         }
