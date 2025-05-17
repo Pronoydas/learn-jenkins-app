@@ -17,6 +17,10 @@ pipeline {
                npm ci 
                nmp run build 
                ls -la
+<<<<<<< HEAD
+=======
+
+>>>>>>> 410b1b70c036ce61b3362cc5c6367f13725f60cd
                '''
             }
         }
