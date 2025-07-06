@@ -1,0 +1,63 @@
+pipeline {
+    agent any
+
+    stages {
+        stage("Code Checkout"){
+            steps{
+                sh 'git clone https://github.com/Pronoydas/learn-jenkins-app.git'
+            }
+        }
+        
+        stage("Build"){
+            agent{
+                docker{
+                    image 'node:18-alpine'
+                    reuseNode true
+                }
+            }
+            steps {
+                sh '''
+                    ls -la
+                    node --version
+                    npm --version
+                    cd learn-jenkins-app
+                    npm ci
+                    npm run build
+                    ls -la
+                
+                
+                '''
+            }
+        }
+        
+        stage('AWS CLI') {
+            agent {
+                docker{
+                    image 'amazon/aws-cli'
+                    args "--entrypoint=''"
+                    reuseNode true
+                }
+            }
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'my_aws_key', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) {
+                        sh '''
+                        
+                        aws --version
+                        aws s3 sync learn-jenkins-app/build s3://learnjenkinsapps
+
+                        
+                        '''
+}
+                echo 'Hello World'
+                
+                
+            }
+        }
+    }
+    
+    post {
+        always{
+            deleteDir()
+        }
+    }
+}
